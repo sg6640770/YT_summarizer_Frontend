@@ -169,13 +169,7 @@ export const AuthForm: React.FC = () => {
             </button>
           </div>
 
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-700">
-              <strong>Note:</strong> Ensure your Nhost project is correctly set up.
-              Check your <code>.env</code> file for the correct subdomain and region.
-              Use the browser console for more error information.
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>

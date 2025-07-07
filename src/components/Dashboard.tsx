@@ -12,13 +12,12 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       <VideoInput onSummarizationStart={handleSummarizationStart} />
       <HistorySection
         summaries={summaries}
         loading={loading}
-        // Removed fetchSummaries (no backend DB anymore)
-        onRefresh={() => {}} // No-op or you can remove `onRefresh` prop from `HistorySection`
+        onRefresh={() => {}}
       />
     </div>
   )

@@ -58,31 +58,35 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden hover:shadow-xl transition-shadow">
-      <div className="flex">
+      {/* Mobile-friendly layout: stack on small screens, row on larger */}
+      <div className="flex flex-col sm:flex-row">
+        {/* Thumbnail */}
         <div className="flex-shrink-0">
           <img
             src={summary.video_thumbnail || 'https://via.placeholder.com/320x180?text=Video'}
             alt={summary.video_title || 'YouTube Video'}
-            className="w-32 h-24 object-cover"
+            className="w-full sm:w-32 h-48 sm:h-24 object-cover"
           />
         </div>
 
+        {/* Content */}
         <div className="flex-1 p-4">
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">
+          <div className="flex items-start justify-between mb-2 gap-2">
+            <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm sm:text-base flex-1">
               {summary.video_title || 'Untitled Video'}
             </h3>
             <a
               href={summary.video_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
 
-          <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+          {/* Status and Date */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-3">
             <div className="flex items-center space-x-1">
               {getStatusIcon()}
               <span>{getStatusText()}</span>
@@ -93,9 +97,10 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
             </div>
           </div>
 
+          {/* Summary or Status Message */}
           {summary.status === 'completed' && hasSummaryText && (
             <div className="space-y-3">
-              <div className="prose max-w-none bg-gray-50 rounded-lg p-3 overflow-x-auto">
+              <div className="prose max-w-none bg-gray-50 rounded-lg p-3 overflow-x-auto text-sm sm:text-base">
                 <ReactMarkdown>{summary.summary}</ReactMarkdown>
               </div>
 
@@ -110,26 +115,20 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
           )}
 
           {summary.status === 'completed' && !hasSummaryText && (
-            <div className="bg-orange-50 rounded-lg p-3">
-              <p className="text-sm text-orange-700">
-                Summary completed but no text available. Check your n8n workflow output.
-              </p>
+            <div className="bg-orange-50 rounded-lg p-3 text-sm text-orange-700">
+              Summary completed but no text available. Check your n8n workflow output.
             </div>
           )}
 
           {summary.status === 'pending' && (
-            <div className="bg-yellow-50 rounded-lg p-3">
-              <p className="text-sm text-yellow-700">
-                Your video is being processed. This may take a few minutes...
-              </p>
+            <div className="bg-yellow-50 rounded-lg p-3 text-sm text-yellow-700">
+              Your video is being processed. This may take a few minutes...
             </div>
           )}
 
           {summary.status === 'failed' && (
-            <div className="bg-red-50 rounded-lg p-3">
-              <p className="text-sm text-red-700">
-                Failed to process this video. Please try again.
-              </p>
+            <div className="bg-red-50 rounded-lg p-3 text-sm text-red-700">
+              Failed to process this video. Please try again.
             </div>
           )}
         </div>
