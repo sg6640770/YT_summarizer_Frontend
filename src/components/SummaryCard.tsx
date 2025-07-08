@@ -54,21 +54,30 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
     }
   }
 
+  const getThumbnail = () => {
+    const isValid = summary.videoThumbnail && !summary.videoThumbnail.includes('placeholder')
+    if (isValid) return summary.videoThumbnail
+
+    const match = summary.videoUrl?.match(/(?:v=|\/|be\/|shorts\/|embed\/)([\w-]{11})/)
+    const videoId = match?.[1]
+    return videoId
+      ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+      : 'https://dummyimage.com/320x180/cccccc/000000&text=No+Thumbnail'
+  }
+
   const hasSummaryText = summary.summary?.trim().length > 0
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden hover:shadow-xl transition-shadow">
-      {/* Mobile-friendly layout: stack on small screens, row on larger */}
       <div className="flex flex-col sm:flex-row w-full">
-  {/* Thumbnail */}
-  <div className="w-full sm:w-40 flex-shrink-0">
-    <img
-      src={summary.videoThumbnail || 'https://dummyimage.com/320x180/cccccc/000000&text=No+Thumbnail'}
-      alt={summary.videoTitle || 'YouTube Video'}
-      className="w-full h-40 sm:h-24 object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
-    />
-  </div>
-
+        {/* Thumbnail */}
+        <div className="w-full sm:w-40 flex-shrink-0">
+          <img
+            src={getThumbnail()}
+            alt={summary.videoTitle || 'YouTube Video'}
+            className="w-full h-40 sm:h-24 object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
+          />
+        </div>
 
         {/* Content */}
         <div className="flex-1 p-4">
@@ -98,7 +107,7 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
             </div>
           </div>
 
-          {/* Summary or Status Message */}
+          {/* Summary Content */}
           {summary.status === 'completed' && hasSummaryText && (
             <div className="space-y-3">
               <div className="prose max-w-none bg-gray-50 rounded-lg p-3 overflow-x-auto text-sm sm:text-base">
