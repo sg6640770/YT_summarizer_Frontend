@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { VideoInput } from './VideoInput'
 import { HistorySection } from './HistorySection'
 import { useVideoSummaries } from '../hooks/useVideoSummaries'
@@ -8,19 +8,18 @@ export const Dashboard: React.FC = () => {
   const { summaries, loading, addSummary, fetchSummaries } = useVideoSummaries()
   const { isAuthenticated } = useAuthenticationStatus()
 
-  const handleSummarizationStart = (newSummary: any) => {
-    addSummary(newSummary)
-  }
-
+  
+ 
+  // Fetch summaries if authenticated
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchSummaries()
-    }
+    if (isAuthenticated) fetchSummaries()
   }, [isAuthenticated])
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      <VideoInput onSummarizationStart={handleSummarizationStart} />
+    <div  className="w-full max-w-5xl mx-auto px-4 space-y-8 transition-colors duration-500">
+    
+
+      <VideoInput onSummarizationStart={addSummary} />
       <HistorySection
         summaries={summaries}
         loading={loading}

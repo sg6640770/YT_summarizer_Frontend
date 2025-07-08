@@ -7,6 +7,7 @@ import { Layout } from './components/Layout'
 import { AuthForm } from './components/AuthForm'
 import { Dashboard } from './components/Dashboard'
 
+
 const AppContent: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuthenticationStatus()
 
@@ -22,7 +23,10 @@ const AppContent: React.FC = () => {
   }
 
   return (
+
+          
     <Layout>
+      
       {isAuthenticated ? <Dashboard /> : <AuthForm />}
     </Layout>
   )

@@ -59,16 +59,16 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Mobile-friendly layout: stack on small screens, row on larger */}
-      <div className="flex flex-col sm:flex-row">
-        {/* Thumbnail */}
-        <div className="flex-shrink-0">
-           <img
+      <div className="flex flex-col sm:flex-row w-full">
+  {/* Thumbnail */}
+  <div className="w-full sm:w-40 flex-shrink-0">
+    <img
       src={summary.videoThumbnail || 'https://dummyimage.com/320x180/cccccc/000000&text=No+Thumbnail'}
-
       alt={summary.videoTitle || 'YouTube Video'}
-      className="w-full sm:w-40 h-40 object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
+      className="w-full h-40 sm:h-24 object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
     />
-        </div>
+  </div>
+
 
         {/* Content */}
         <div className="flex-1 p-4">
