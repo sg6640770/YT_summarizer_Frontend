@@ -27,11 +27,11 @@ export const VideoInput: React.FC = () => {
 
       const newSummary = {
         id: result.id || 'job-' + Date.now(),
-        video_url: videoUrl,
-        video_title: result.video_title,
+        videoUrl: videoUrl,
+        videoTitle: result.videoTitle,
         summary: result.summary,
         status: result.status || 'completed',
-        video_thumbnail: `https://img.youtube.com/vi/${videoId}/0.jpg`
+        videoThumbnail: `https://img.youtube.com/vi/${videoId}/0.jpg`
       }
 
       setSummaryData(newSummary)
@@ -39,7 +39,7 @@ export const VideoInput: React.FC = () => {
       await saveSummaryToBackend({
         userEmail: user?.email ?? 'anonymous@demo.com',
         videoUrl,
-        videoTitle: newSummary.video_title,
+        videoTitle: newSummary.videoTitle,
         summary: newSummary.summary
       })
     } catch (err) {

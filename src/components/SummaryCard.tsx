@@ -62,21 +62,22 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary }) => {
       <div className="flex flex-col sm:flex-row">
         {/* Thumbnail */}
         <div className="flex-shrink-0">
-          <img
-            src={summary.video_thumbnail || 'https://via.placeholder.com/320x180?text=Video'}
-            alt={summary.video_title || 'YouTube Video'}
-            className="w-full sm:w-32 h-48 sm:h-24 object-cover"
-          />
+           <img
+      src={summary.videoThumbnail || 'https://dummyimage.com/320x180/cccccc/000000&text=No+Thumbnail'}
+
+      alt={summary.videoTitle || 'YouTube Video'}
+      className="w-full sm:w-40 h-40 object-cover rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none"
+    />
         </div>
 
         {/* Content */}
         <div className="flex-1 p-4">
           <div className="flex items-start justify-between mb-2 gap-2">
             <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm sm:text-base flex-1">
-              {summary.video_title || 'Untitled Video'}
+              {summary.videoTitle || 'Untitled Video'}
             </h3>
             <a
-              href={summary.video_url}
+              href={summary.videoUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-gray-600 transition-colors"

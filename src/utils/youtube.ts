@@ -22,6 +22,6 @@ export const getVideoThumbnail = (videoId: string): string => {
 }
 
 export const getVideoTitle = async (videoId: string): Promise<string> => {
-  // Placeholder title until you integrate with YouTube Data API (if needed)
+ 
   return `YouTube Video (${videoId})`
 }

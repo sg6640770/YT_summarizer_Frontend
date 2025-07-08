@@ -20,8 +20,9 @@ export const getVideoSummary = async (videoUrl: string) => {
 
   return {
     summary: data.summary || data.text,
-    video_title: data.video_title || 'YouTube Video',
-    id: data.id,
+    videoTitle: data.videoTitle || 'YouTube Video',
+    videoUrl: data.videoUrl,
+    videoId: data.videoId,
     status: data.status || 'completed'
   }
 }
