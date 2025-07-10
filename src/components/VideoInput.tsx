@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { getVideoSummary } from '../services/n8nService'
 import { useUserData } from '@nhost/nextjs'
-
 import { SummaryCard } from './SummaryCard'
 import { VideoSummary } from '../types'
 import { Loader2 } from 'lucide-react'
 import { saveSummaryToBackend } from '../services/summaryService'
 
-export const VideoInput: React.FC = () => {
+interface VideoInputProps {
+  mode: 'light' | 'dark'
+}
+
+export const VideoInput: React.FC<VideoInputProps> = ({ mode }) => {
   const [videoUrl, setVideoUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [summaryData, setSummaryData] = useState<VideoSummary | null>(null)
@@ -25,9 +28,9 @@ export const VideoInput: React.FC = () => {
       const result = await getVideoSummary(videoUrl)
       const videoId = extractVideoId(videoUrl)
 
-      const newSummary = {
+      const newSummary: VideoSummary = {
         id: result.id || 'job-' + Date.now(),
-        videoUrl: videoUrl,
+        videoUrl,
         videoTitle: result.videoTitle,
         summary: result.summary,
         status: result.status || 'completed',
@@ -57,7 +60,7 @@ export const VideoInput: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-6 sm:mt-8 space-y-6 px-4 sm:px-0">
+    <div className="w-full max-w-2xl mx-auto mt-6 sm:mt-8 space-y-6 px-4 sm:px-0 transition-colors duration-300">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row gap-2"
@@ -68,24 +71,31 @@ export const VideoInput: React.FC = () => {
           value={videoUrl}
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Enter YouTube video URL"
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className={`w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-purple-500
+            ${mode === 'dark'
+              ? 'bg-gray-800 text-white border-gray-600 placeholder-gray-400'
+              : 'bg-white text-black border-gray-300'}`}
         />
         <button
           type="submit"
-          className="w-full sm:w-auto flex justify-center items-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition disabled:opacity-50"
           disabled={loading}
+          className="w-full sm:w-auto flex justify-center items-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition disabled:opacity-50"
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Summarize'}
         </button>
       </form>
 
       {error && (
-        <div className="text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg text-sm sm:text-base">
+        <div className={`border p-3 rounded-lg text-sm sm:text-base
+          ${mode === 'dark'
+            ? 'text-red-200 bg-red-900 border-red-700'
+            : 'text-red-600 bg-red-50 border-red-200'}`}
+        >
           {error}
         </div>
       )}
 
-      {summaryData && <SummaryCard summary={summaryData} />}
+      {summaryData && <SummaryCard summary={summaryData} mode={mode} />}
     </div>
   )
 }

@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { VideoInput } from './VideoInput'
 import { HistorySection } from './HistorySection'
 import { useVideoSummaries } from '../hooks/useVideoSummaries'
 import { useAuthenticationStatus } from '@nhost/react'
 
-export const Dashboard: React.FC = () => {
+interface DashboardProps {
+  mode: 'light' | 'dark'
+}
+
+export const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
   const { summaries, loading, addSummary, fetchSummaries } = useVideoSummaries()
   const { isAuthenticated } = useAuthenticationStatus()
 
-  
- 
-  // Fetch summaries if authenticated
   useEffect(() => {
     if (isAuthenticated) fetchSummaries()
   }, [isAuthenticated])
 
   return (
-    <div  className="w-full max-w-5xl mx-auto px-4 space-y-8 transition-colors duration-500">
-    
+    <div
+      className={`w-full max-w-5xl mx-auto px-4 space-y-8 transition-colors duration-500 ${
+        mode === 'dark' ? 'text-white' : 'text-black'
+      }`}
+    >
+      <VideoInput onSummarizationStart={addSummary} mode={mode} />
 
-      <VideoInput onSummarizationStart={addSummary} />
       <HistorySection
         summaries={summaries}
         loading={loading}
         onRefresh={fetchSummaries}
+        mode={mode} // pass mode to HistorySection
       />
     </div>
   )
