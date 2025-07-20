@@ -1,7 +1,7 @@
 // src/services/n8nService.ts
 
 const N8N_WEBHOOK_URL =
-  import.meta.env.VITE_N8N_WEBHOOK_URL || 'http://localhost:5678/webhook-test/ytube'
+  import.meta.env.VITE_N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/ytube'
 
 export const getVideoSummary = async (videoUrl: string) => {
   const response = await fetch(N8N_WEBHOOK_URL, {
