@@ -1,26 +1,30 @@
-import { getVideoSummary } from './n8nService'
+// src/services/summaryService.ts
 
 export const saveSummaryToBackend = async ({
   userEmail,
   videoUrl,
   videoTitle,
-  summary,
-  
+  summary
 }: {
   userEmail: string
   videoUrl: string
   videoTitle: string
   summary: string
 }) => {
-  const BACKEND_URL = 'https://ytsummarizerbackend-production.up.railway.app'
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
-  // ✅ Extract video ID from URL to generate thumbnail
-  const videoId = new URL(videoUrl).searchParams.get('v')
+  // Extract YouTube Video ID (works for standard & short URLs)
+  const extractVideoId = (url: string): string | null => {
+    const match = url.match(/(?:v=|\/|be\/|shorts\/|embed\/)([\w-]{11})/)
+    return match ? match[1] : null
+  }
+
+  const videoId = extractVideoId(videoUrl)
   const videoThumbnail = videoId
     ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
     : 'https://via.placeholder.com/320x180?text=No+Thumbnail'
 
-  const res = await fetch(`${BACKEND_URL}/api/summaries`, {
+  const response = await fetch(`${BACKEND_URL}/api/summaries`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -30,14 +34,15 @@ export const saveSummaryToBackend = async ({
       videoUrl,
       videoTitle,
       summary,
-      videoThumbnail // ✅ send thumbnail to backend
+      videoThumbnail
     })
   })
 
-  if (!res.ok) {
-    const errorText = await res.text()
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('Error from backend:', errorText)
     throw new Error(`Failed to save summary: ${errorText}`)
   }
 
-  return await res.text()
+  return await response.text()
 }

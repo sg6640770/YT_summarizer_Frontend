@@ -2,19 +2,20 @@ import React, { useEffect } from 'react'
 import { VideoInput } from './VideoInput'
 import { HistorySection } from './HistorySection'
 import { useVideoSummaries } from '../hooks/useVideoSummaries'
-import { useAuthenticationStatus } from '@nhost/react'
 
 interface DashboardProps {
   mode: 'light' | 'dark'
+  userEmail: string | "null"
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
-  const { summaries, loading, addSummary, fetchSummaries } = useVideoSummaries()
-  const { isAuthenticated } = useAuthenticationStatus()
+
+export const Dashboard: React.FC<DashboardProps> = ({ mode, userEmail }) => {
+
+  const { summaries, loading, addSummary, fetchSummaries } = useVideoSummaries(userEmail)
 
   useEffect(() => {
-    if (isAuthenticated) fetchSummaries()
-  }, [isAuthenticated])
+    fetchSummaries()
+  }, [userEmail])
 
   return (
     <div
@@ -22,13 +23,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
         mode === 'dark' ? 'text-white' : 'text-black'
       }`}
     >
-      <VideoInput onSummarizationStart={addSummary} mode={mode} />
+ <VideoInput
+  onSummarizationStart={addSummary}
+  mode={mode}
+  userEmail={userEmail} 
+/>
+
 
       <HistorySection
         summaries={summaries}
         loading={loading}
         onRefresh={fetchSummaries}
-        mode={mode} // pass mode to HistorySection
+        mode={mode} 
       />
     </div>
   )

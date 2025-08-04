@@ -1,30 +1,44 @@
 import React from 'react'
 import { LogOut, User, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { useUserData, useSignOut } from '@nhost/react'
 
 interface LayoutProps {
   children: React.ReactNode
   mode: 'light' | 'dark'
   toggleMode: () => void
+  onLogout?: () => void
+  userEmail?: string | null
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, mode, toggleMode }) => {
-  const { signOut } = useSignOut()
-  const user = useUserData()
+export const Layout: React.FC<LayoutProps> = ({
+  children,
+  mode,
+  toggleMode,
+  onLogout,
+  userEmail,
+}) => {
+  const isDark = mode === 'dark'
 
-  const handleSignOut = async () => {
-    await signOut()
+  const handleSignOut = () => {
+    onLogout?.()
     toast.success('Signed out successfully!')
   }
 
-  const isDark = mode === 'dark'
-
-  if (!user) return <>{children}</>
-
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-[#042743] text-white' : 'bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 text-black'}`}>
-      <header className={`${isDark ? 'bg-[#033150] border-b border-blue-900 text-white' : 'bg-white/80 backdrop-blur-sm border-b border-white/20 text-gray-900'} sticky top-0 z-50`}>
+    <div
+      className={`min-h-screen ${
+        isDark
+          ? 'bg-[#042743] text-white'
+          : 'bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 text-black'
+      }`}
+    >
+      <header
+        className={`${
+          isDark
+            ? 'bg-[#033150] border-b border-blue-900 text-white'
+            : 'bg-white/80 backdrop-blur-sm border-b border-white/20 text-gray-900'
+        } sticky top-0 z-50`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 h-auto py-4 sm:py-0 sm:h-16">
             {/* Branding */}
@@ -36,7 +50,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, mode, toggleMode }) =>
                 <h1 className="text-lg sm:text-xl font-semibold">
                   YouTube Summarizer
                 </h1>
-                <p className={`text-xs sm:text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
+                <p
+                  className={`text-xs sm:text-sm ${
+                    isDark ? 'text-gray-300' : 'text-gray-500'
+                  }`}
+                >
                   AI-powered video insights
                 </p>
               </div>
@@ -44,23 +62,31 @@ export const Layout: React.FC<LayoutProps> = ({ children, mode, toggleMode }) =>
 
             {/* User Info + Sign Out + Toggle */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-              <div className={`flex items-center space-x-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                <User className="w-4 h-4" />
-                <span className="break-all">{user?.email}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleSignOut}
-                  className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-colors ${
-                    isDark
-                      ? 'text-gray-300 hover:text-white hover:bg-blue-900'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              {userEmail && (
+                <div
+                  className={`flex items-center space-x-2 text-sm ${
+                    isDark ? 'text-gray-300' : 'text-gray-600'
                   }`}
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </button>
+                  <User className="w-4 h-4" />
+                  <span className="break-all">{userEmail}</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                {userEmail && onLogout && (
+                  <button
+                    onClick={handleSignOut}
+                    className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-colors ${
+                      isDark
+                        ? 'text-gray-300 hover:text-white hover:bg-blue-900'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                )}
 
                 <button
                   onClick={toggleMode}

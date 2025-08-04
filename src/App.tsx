@@ -1,71 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import { NhostProvider } from '@nhost/react';
-import { useAuthenticationStatus } from '@nhost/react';
-import { Toaster, toast } from 'react-hot-toast';
-import { nhost } from './lib/nhost';
-import { Layout } from './components/Layout';
-import { AuthForm } from './components/AuthForm';
-import { Dashboard } from './components/Dashboard';
+import React, { useEffect, useState } from 'react'
+import { Toaster, toast } from 'react-hot-toast'
+
+import { Layout } from './components/Layout'
+import { AuthForm } from './components/AuthForm'
+import { Dashboard } from './components/Dashboard'
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuthenticationStatus();
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>('light')
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('authToken') !== null
+  })
+  const [userEmail, setUserEmail] = useState<string | null>(() => {
+    const token = localStorage.getItem('authToken')
+    if (!token) return null
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      return payload?.email || payload?.sub || null
+    } catch {
+      return null
+    }
+  })
 
   useEffect(() => {
-    document.body.style.backgroundColor = mode === 'dark' ? '#042743' : 'white';
-  }, [mode]);
+    document.body.style.backgroundColor = mode === 'dark' ? '#042743' : 'white'
+  }, [mode])
 
   const toggleMode = () => {
-    if (mode === 'light') {
-      setMode('dark');
-      toast.success('Dark mode has been enabled');
-    } else {
-      setMode('light');
-      toast.success('Light mode has been enabled');
-    }
-  };
+    setMode(prev => {
+      const newMode = prev === 'light' ? 'dark' : 'light'
+      toast.success(`${newMode === 'dark' ? 'Dark' : 'Light'} mode enabled`)
+      return newMode
+    })
+  }
 
-  if (isLoading) {
-    return (
-      <div className={`min-h-screen ${mode === 'dark' ? 'bg-[#042743]' : 'bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100'} flex items-center justify-center`}>
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className={mode === 'dark' ? 'text-white' : 'text-gray-600'}>Loading...</p>
-        </div>
-      </div>
-    );
+  const handleAuthSuccess = (token: string) => {
+    localStorage.setItem('authToken', token)
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      setUserEmail(payload?.email || payload?.sub || null)
+    } catch {
+      setUserEmail(null)
+    }
+    setIsAuthenticated(true)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    setUserEmail(null)
+    setIsAuthenticated(false)
+    toast.success('Logged out successfully')
   }
 
   return (
     <div className={`${mode === 'dark' ? 'bg-[#042743] text-white' : 'bg-white text-black'} min-h-screen`}>
-      <Layout mode={mode} toggleMode={toggleMode}>
-        {isAuthenticated ? <Dashboard /> : <AuthForm />}
+      <Layout
+        mode={mode}
+        toggleMode={toggleMode}
+        onLogout={handleLogout}
+        userEmail={userEmail}
+      >
+        {isAuthenticated ? (
+          <Dashboard mode={mode} userEmail={userEmail} />
+        ) : (
+          <AuthForm onAuthSuccess={handleAuthSuccess} />
+        )}
       </Layout>
     </div>
-  );
-};
+  )
+}
 
 function App() {
   return (
-    <NhostProvider nhost={nhost}>
+    <>
       <AppContent />
       <Toaster
         position="top-right"
         toastOptions={{
           style: {
             background: '#374151',
-            color: '#fff',
+            color: '#fff'
           },
           success: {
-            icon: '✅',
+            icon: '✅'
           },
           error: {
-            icon: '❌',
-          },
+            icon: '❌'
+          }
         }}
       />
-    </NhostProvider>
-  );
+    </>
+  )
 }
 
-export default App;
+export default App

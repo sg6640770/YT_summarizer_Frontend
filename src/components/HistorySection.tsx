@@ -7,7 +7,7 @@ interface HistorySectionProps {
   summaries: VideoSummary[]
   loading: boolean
   onRefresh?: () => void
-  mode: 'light' | 'dark' // ✅ added mode prop
+  mode: 'light' | 'dark' 
 }
 
 export const HistorySection: React.FC<HistorySectionProps> = ({

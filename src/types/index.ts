@@ -1,8 +1,13 @@
+// src/types/index.ts
+
 export interface VideoSummary {
-  id: string
-  videoUrl: string
-  videoTitle?: string
-  videoThumbnail?: string
-  summary?: string
-  status: 'pending' | 'completed' | 'failed'
+  id: string;                        
+  userEmail: string;                
+  videoUrl: string;
+  videoTitle: string;               
+  videoThumbnail: string;          
+  summary: string;                  
+  status: 'pending' | 'completed' | 'failed';
+  createdAt: string;              
+  updatedAt?: string;          
 }

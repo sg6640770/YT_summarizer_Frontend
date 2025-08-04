@@ -62,12 +62,12 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ summary, mode }) => {
 
  const sanitizeText = (text: string) => {
   return text
-    .replace(/[#>*_`~|]/g, '')                // remove markdown + | symbols
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1')       // replace [text](link) with 'text'
-    .replace(/[-]+/g, ' ')                    // replace long ---- lines with space
-    .replace(/\n{2,}/g, '\n')                 // collapse multiple line breaks
-    .replace(/\n/g, '. ')                     // convert newlines to sentences
-    .replace(/[|]{2,}/g, ' ')                 // replace double pipes || with space
+    .replace(/[#>*_`~|]/g, '')                
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')       
+    .replace(/[-]+/g, ' ')                    
+    .replace(/\n{2,}/g, '\n')                 
+    .replace(/\n/g, '. ')                    
+    .replace(/[|]{2,}/g, ' ')                 
     .trim()
 }
 
