@@ -1,108 +1,207 @@
-# YouTube Video Summarizer
+🎥 YouTube Video Summarizer
 
-A beautiful, production-ready YouTube video summarizer built with React, Spring Boot, JDBC, java and n8n integration.
+Next.js • Spring Boot • JDBC • MySQL • n8n • NLP • TTS
 
-## Features
+A full-stack AI-powered web app that summarizes YouTube videos using an automated n8n workflow. Users can paste a YouTube URL, generate summaries instantly, store and view their history, and even convert summaries to speech.
 
-- **Authentication**: Secure user authentication with Nhost
-- **Video Summarization**: AI-powered YouTube video summarization via n8n workflows
-- **History Tracking**: Personal history of all summarized videos
-- **Real-time Status**: Live updates on summarization progress
-- **Responsive Design**: Beautiful, mobile-first design with glassmorphism effects
-- **Copy & Share**: Easy copying and sharing of summaries
+🚀 Features
+🔹 AI / Automation
 
-## Setup Instructions
+Auto-summarizes YouTube videos via an n8n NLP pipeline
 
+Asynchronous, scalable workflow
 
-### 2. n8n Workflow Setup
+Supports long transcripts and multi-step processing
 
-You'll need to create an n8n workflow that:
+🔹 Frontend (Next.js)
 
-1. Receives a webhook with `videoUrl` and `userId`
-2. Extracts video transcript using YouTube API or transcript services
-3. Summarizes the content using AI (OpenAI, Claude, etc.)
-4. Stores the result in your Nhost database
-5. Optionally sends status updates back to the frontend
+Clean, modern UI with Tailwind CSS
 
-#### Sample n8n Workflow Structure:
+Dark Mode support
 
-```
-Webhook → YouTube Data → AI Summarization → Database Update → Response
-```
+Slider-based UI previews
 
-### 3. Database Schema
+Copy summary, export options
 
-Create these tables in your Nhost PostgreSQL database:
+Responsive design
 
-```sql
-CREATE TABLE video_summaries (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id uuid REFERENCES auth.users(id),
-  video_url text NOT NULL,
-  video_title text,
-  video_thumbnail text,
-  summary text,
-  status text DEFAULT 'pending',
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
+🔹 Backend (Java + Spring Boot)
 
--- Enable RLS
-ALTER TABLE video_summaries ENABLE ROW LEVEL SECURITY;
+REST APIs for summarization, history, and pagination
 
--- Policy for users to see only their summaries
-CREATE POLICY "Users can view own summaries" ON video_summaries
-  FOR SELECT USING (auth.uid() = user_id);
+JDBC-based service layer
 
-CREATE POLICY "Users can insert own summaries" ON video_summaries
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+Error-handling + validation
 
-CREATE POLICY "Users can update own summaries" ON video_summaries
-  FOR UPDATE USING (auth.uid() = user_id);
-```
+🔹 Database (MySQL)
 
-### 4. Environment Variables
+Normalized schema
 
-Copy `.env.example` to `.env` and update with your values:
+Fast retrieval using indexing
 
-```env
-REACT_APP_NHOST_SUBDOMAIN=your-subdomain
-REACT_APP_NHOST_REGION=eu-central-1
-REACT_APP_N8N_WEBHOOK_URL=https://your-n8n-instance.com/webhook/youtube-summarizer
-```
+Supports 1,000+ summaries per user
 
-### 5. Installation & Development
+User-specific data isolation
 
-```bash
+🔹 Extras
+
+Text-to-Speech (TTS)
+
+Multi-language voice support
+
+Adjustable playback speed
+
+🛠️ Tech Stack
+Frontend
+
+Next.js
+
+Tailwind CSS
+
+Axios
+
+React Query
+
+Backend
+
+Java
+
+Spring Boot
+
+JDBC
+
+REST APIs
+
+Database
+
+MySQL
+
+Normalized relational schema
+
+Automation
+
+n8n
+
+NLP (AI model via API)
+
+🧩 System Architecture
+YouTube URL → Next.js UI → Spring Boot API → n8n Workflow → NLP Model
+          ↑                 ↓                        ↓
+     User history ← MySQL DB ← Summary & Metadata ← Transcript
+
+📂 Repository Links
+Frontend:
+
+🔗 https://github.com/sg6640770/YT_summarizer_Frontend
+
+Backend:
+
+🔗 https://github.com/sg6640770/YT_summarizer_Backend
+
+📦 Installation & Setup
+1️⃣ Clone the repositories
+git clone https://github.com/sg6640770/YT_summarizer_Frontend
+git clone https://github.com/sg6640770/YT_summarizer_Backend
+
+🖥️ Frontend Setup (Next.js)
+cd YT_summarizer_Frontend
 npm install
 npm run dev
-```
 
-## n8n Workflow Details
 
-Your n8n workflow should handle:
+Create .env.local:
 
-1. **Video Processing**: Extract transcript from YouTube
-2. **AI Summarization**: Use AI to create concise summaries
-3. **Database Updates**: Store results in Nhost
-4. **Error Handling**: Proper error states and user feedback
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
 
-## Tech Stack
+⚙️ Backend Setup (Java Spring Boot)
+cd YT_summarizer_Backend
+mvn clean install
+mvn spring-boot:run
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Authentication**: Nhost Auth
-- **Database**: PostgreSQL (via Nhost)
-- **Workflow**: n8n for video processing
-- **UI Icons**: Lucide React
-- **Notifications**: React Hot Toast
 
-## Contributing
+Create application.properties:
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+spring.datasource.url=jdbc:mysql://localhost:3306/youtube_summarizer
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
+n8n.webhook.url=YOUR_N8N_WEBHOOK_URL
 
-## License
+🗄️ MySQL Schema
 
-MIT License - see LICENSE file for details
+Key tables:
+
+users (user_id, email, password_hash)
+summaries (id, user_id, video_id, title, summary, created_at)
+
+
+✔ Normalized
+✔ Indexed columns for fast pagination
+✔ Foreign keys for referential integrity
+
+🤖 n8n Workflow (High-Level)
+
+Webhook Trigger receives YouTube link
+
+Extract Video ID
+
+Fetch YouTube transcript
+
+Send transcript to NLP Model (AI)
+
+Generate summarized result
+
+Return structured JSON to backend
+
+Backend stores summary in MySQL
+
+Frontend updates user history
+
+🎤 Text-to-Speech Feature
+
+Supports multiple languages
+
+Adjustable playback speed
+
+Auto-generates audio from summary
+
+Built with Web Speech API / TTS engine
+
+🧪 API Endpoints (Backend)
+Method	Endpoint	Description
+POST	/api/summarize	Trigger summary for YouTube URL
+GET	/api/history/{userId}	Get paginated history
+GET	/api/summary/{id}	Get specific summary
+DELETE	/api/summary/{id}	Delete a summary
+📸 Screenshots (Add your images here)
+/public/screenshots/home.png  
+/public/screenshots/summary.png  
+/public/screenshots/history.png  
+/public/screenshots/tts.png  
+
+
+Example placeholder:
+
+🚀 Future Enhancements
+
+OAuth login
+
+Export summaries as PDF
+
+AI-powered keyword extraction
+
+Multi-video batch processing
+
+Chrome Extension
+
+🏁 Conclusion
+
+This project helped me strengthen:
+
+✔ Full-stack architecture
+✔ Database normalization
+✔ AI workflow automation
+✔ Next.js UI/UX
+✔ Spring Boot API development
+✔ MySQL indexing & optimization
+
+If you have feedback or ideas to improve the system, feel free to connect!
