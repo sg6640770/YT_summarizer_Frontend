@@ -1,6 +1,6 @@
 # YouTube Video Summarizer
 
-A beautiful, production-ready YouTube video summarizer built with React, Nhost, and n8n integration.
+A beautiful, production-ready YouTube video summarizer built with React, Spring Boot, JDBC, java and n8n integration.
 
 ## Features
 
@@ -13,12 +13,6 @@ A beautiful, production-ready YouTube video summarizer built with React, Nhost, 
 
 ## Setup Instructions
 
-### 1. Nhost Setup
-
-1. Create an account at [Nhost](https://nhost.io)
-2. Create a new project
-3. Copy your subdomain and region
-4. Update the `.env` file with your Nhost credentials
 
 ### 2. n8n Workflow Setup
 
